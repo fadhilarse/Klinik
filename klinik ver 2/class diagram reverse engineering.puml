@@ -1,0 +1,92 @@
+@startuml
+' --- KONFIGURASI LAYOUT AGAR RAPI (GARIS MENYIKU & JARAK LEGA) ---
+skinparam linetype ortho
+skinparam nodesep 80
+skinparam ranksep 80
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam class {
+    BackgroundColor White
+    ArrowColor Black
+    BorderColor Black
+}
+
+' --- DEFINISI PACKAGE & CLASS ---
+package "Modul Person" {
+    class Individu {
+        - id: Long
+        - nama: String
+        - alamat: String
+    }
+
+    class Pasien {
+        - daftarRekamMedis: List<RekamMedis>
+    }
+
+    class Dokter {
+        - id: Long
+        - nama: String
+        - spesialisasi: String
+        - nomorIzinPraktek: String
+        - alamat: String
+    }
+}
+
+package "Modul Fasilitas" {
+    class Klinik {
+        - id: Long
+        - namaKlinik: String
+        - daftarRuangan: List<Ruangan>
+        - daftarDokter: List<Dokter>
+    }
+}
+
+package "Modul Transaksi Medis" {
+    class Kunjungan {
+        - id: Long
+        - tanggalKunjungan: LocalDate
+        - keluhan: String
+        - status: String
+        - pasien: Pasien
+        - dokter: Dokter
+        - ruangan: Ruangan
+    }
+
+    class RekamMedis {
+        - id: Long
+        - keluhan: String
+        - diagnosa: String
+        - tindakan: String
+        - resepObat: String
+        - waktuPemeriksaan: LocalDateTime
+        - kunjungan: Kunjungan
+    }
+
+    class Ruangan {
+        - id: Long
+        - nomorRuang: String
+        - kunjungan: Kunjungan
+    }
+}
+
+' --- RELASI DENGAN PENGATURAN ARAH (UP/DOWN/RIGHT/LEFT) ---
+
+' 1. INHERITANCE (Individu di atas Pasien)
+Individu <|-down- Pasien : 1. Inheritance
+
+' 2. KOMPOSISI (Klinik di atas, memegang Dokter dan Ruangan di bawahnya)
+Klinik "1" *-down- "0..*" Dokter : 2. Komposisi
+Klinik "1" *-down- "0..*" Ruangan : 2. Komposisi
+
+' 3. AGREGASI / RUJUKAN (Kunjungan di bawah, merujuk ke entitas di atasnya)
+Kunjungan "*" o-up- "1" Pasien : 3. Agregasi
+Kunjungan "*" o-up- "1" Dokter : 3. Agregasi
+Kunjungan "*" o-up- "1" Ruangan : 3. Agregasi
+
+' 4. ASOSIASI (RekamMedis berada di sebelah kanan Kunjungan)
+Kunjungan "1" -right- "1" RekamMedis : 4. Asosiasi (One-to-One)
+
+' 5. AGREGASI (Pasien merujuk ke kumpulan RekamMedis)
+Pasien "1" o-right- "*" RekamMedis : 5. Agregasi
+
+@enduml

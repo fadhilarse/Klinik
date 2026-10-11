@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+    <nav th:fragment="sidebar(activePage)" class="col-md-2 d-none d-md-block sidebar py-3 p-0">
+        <h4 class="text-white text-center mb-4"><i class="fa-solid fa-notes-medical"></i> Klinik Care</h4>
+        
+        <a th:href="@{/}" th:classappend="${activePage == 'dashboard' ? 'active' : ''}">
+            <i class="fa-solid fa-house-chimney me-2"></i> Dashboard
+        </a>
+        <a th:href="@{/dokter}" th:classappend="${activePage == 'dokter' ? 'active' : ''}">
+            <i class="fa-solid fa-user-doctor me-2"></i> Data Dokter
+        </a>
+        <a th:href="@{/pasien}" th:classappend="${activePage == 'pasien' ? 'active' : ''}">
+            <i class="fa-solid fa-users me-2"></i> Data Pasien
+        </a>
+        <a th:href="@{/kunjungan}" th:classappend="${activePage == 'kunjungan' ? 'active' : ''}">
+            <i class="fa-solid fa-clipboard-list me-2"></i> Antrean
+        </a>
+        <a th:href="@{/pemeriksaan}" th:classappend="${activePage == 'pemeriksaan' ? 'active' : ''}">
+            <i class="fa-solid fa-stethoscope me-2"></i> Pemeriksaan
+        </a>
+        <!-- TAMBAHAN MENU RIWAYAT MEDIS -->
+        <a th:href="@{/pemeriksaan/riwayat}" th:classappend="${activePage == 'riwayat' ? 'active' : ''}">
+            <i class="fa-solid fa-clock-rotate-left me-2"></i> Riwayat Medis
+        </a>
+    </nav>
+
+</body>
+</html>

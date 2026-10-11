@@ -1,0 +1,29 @@
+@startuml
+autonumber
+actor Dokter
+participant "pemeriksaan-form.html\n(View)" as View
+participant "PemeriksaanController" as Controller
+participant "RekamMedisRepository" as Repo
+database "PostgreSQL\n(kunjungan, rekam_medis)" as DB
+
+Dokter -> View : Isi Diagnosa, Tindakan, Resep Obat & Klik "Simpan"
+View -> Controller : POST /pemeriksaan/simpan (object RekamMedis)
+activate Controller
+
+Controller -> Controller : setWaktuPemeriksaan(LocalDateTime.now())
+Controller -> Repo : save(rekamMedis)
+activate Repo
+
+Repo -> DB : INSERT INTO rekam_medis (id, diagnosa, tindakan, resep_obat, waktu_pemeriksaan)
+Note over DB
+  Karena RekamMedis extends Kunjungan (Inheritance JOINED),
+  Primary Key 'id' di rekam_medis merujuk langsung ke Primary Key 'id' di kunjungan.
+End note
+DB --> Repo : Success
+deactivate Repo
+
+Controller -> Controller : updateStatusKunjungan("SELESAI")
+Controller --> View : redirect:/pemeriksaan (Flash: "Pemeriksaan selesai!")
+deactivate Controller
+View --> Dokter : Halaman Antrean Diperbarui
+@endluml

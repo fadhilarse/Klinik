@@ -1,0 +1,41 @@
+@startuml
+left to right direction
+skinparam packageStyle rectangle
+
+actor "Resepsionis / Admin" as Admin
+actor Dokter
+
+rectangle "Aplikasi Klinik Care" {
+
+  ' --- KELOLA MASTER DATA DOKTER (ADMIN) ---
+  usecase "Kelola Data Dokter\n(Input, Edit, Hapus)" as UC_Dokter
+  usecase "Cari Dokter (Keyword)" as UC_CariDokter
+
+  ' --- KELOLA MASTER DATA PASIEN & ANTREAN (ADMIN) ---
+  usecase "Kelola Data Pasien\n(Input, Edit, Hapus)" as UC_Pasien
+  usecase "Kelola Antrean Kunjungan\n(Input, Edit, Hapus)" as UC_Kunjungan
+  usecase "Validasi Data Dokter & Pasien" as UC_Validasi
+
+  ' --- PROSES MEDIS & RIWAYAT (DOKTER) ---
+  usecase "Proses Pemeriksaan Pasien" as UC_Pemeriksaan
+  usecase "Simpan Rekam Medis" as UC_SimpanRM
+  usecase "Lihat Riwayat Medis" as UC_Riwayat
+  usecase "Hapus Riwayat Medis" as UC_HapusRM
+
+  ' --- HUBUNGAN AKTOR KE USE CASE ---
+  Admin --> UC_Dokter
+  Admin --> UC_Pasien
+  Admin --> UC_Kunjungan
+
+  Dokter --> UC_Pemeriksaan
+  Dokter --> UC_Riwayat
+
+  ' --- RELASI EXTEND (Fitur Opsional / Pencarian / Penghapusan) ---
+  UC_CariDokter .up.> UC_Dokter : <<extend>>
+  UC_HapusRM .up.> UC_Riwayat : <<extend>>
+
+  ' --- RELASI INCLUDE (Wajib Diproses) ---
+  UC_Kunjungan ..> UC_Validasi : <<include>>
+  UC_Pemeriksaan ..> UC_SimpanRM : <<include>>
+}
+@enduml
