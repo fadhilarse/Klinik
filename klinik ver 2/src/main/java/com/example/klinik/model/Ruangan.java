@@ -1,6 +1,7 @@
 package com.example.klinik.model;
 
 import jakarta.persistence.*;
+import java.util.List;
 
 @Entity
 public class Ruangan {
@@ -11,19 +12,16 @@ public class Ruangan {
 
     private String nomorRuang;
 
-    // --- REVERSE ENGINEERING: KOMPOSISI KE KUNJUNGAN ---
-    // optional = false memastikan Ruangan tidak bisa dibuat/disimpan
-    // tanpa adanya transaksi Kunjungan yang menaunginya
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "kunjungan_id", nullable = false)
-    private Kunjungan kunjungan;
+    // Perbaikan: Relasi dibalik menjadi OneToMany.
+    // mappedBy = "ruangan" merujuk pada nama variabel di Kunjungan.java
+    @OneToMany(mappedBy = "ruangan", fetch = FetchType.LAZY)
+    private List<Kunjungan> daftarKunjungan;
 
     public Ruangan() {
     }
 
-    public Ruangan(String nomorRuang, Kunjungan kunjungan) {
+    public Ruangan(String nomorRuang) {
         this.nomorRuang = nomorRuang;
-        this.kunjungan = kunjungan;
     }
 
     // --- GETTER & SETTER ---
@@ -43,11 +41,11 @@ public class Ruangan {
         this.nomorRuang = nomorRuang;
     }
 
-    public Kunjungan getKunjungan() {
-        return kunjungan;
+    public List<Kunjungan> getDaftarKunjungan() {
+        return daftarKunjungan;
     }
 
-    public void setKunjungan(Kunjungan kunjungan) {
-        this.kunjungan = kunjungan;
+    public void setDaftarKunjungan(List<Kunjungan> daftarKunjungan) {
+        this.daftarKunjungan = daftarKunjungan;
     }
 }
